@@ -1,0 +1,359 @@
+<!-- src/app/app.component.html -->
+<div class="min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-gray-900">Email Signature Maker</h1>
+    </div>
+  </header>
+  
+  <!-- Main content -->
+  <main>
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="px-4 py-6 sm:px-0">
+        <div class="flex flex-col lg:flex-row gap-6">
+          
+          <!-- Left column - Editor -->
+          <div class="w-full lg:w-1/2 bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Your Information</h2>
+            
+            <!-- Editor form -->
+            <div class="space-y-4">
+              <!-- Name -->
+              <div>
+                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" id="name" name="name" [(ngModel)]="signature.name" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  placeholder="John Doe">
+              </div>
+              
+              <!-- Job Title -->
+              <div>
+                <label for="jobTitle" class="block text-sm font-medium text-gray-700">Job Title</label>
+                <input type="text" id="jobTitle" name="jobTitle" [(ngModel)]="signature.jobTitle" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  placeholder="Marketing Manager">
+              </div>
+              
+              <!-- Company -->
+              <div>
+                <label for="company" class="block text-sm font-medium text-gray-700">Company</label>
+                <input type="text" id="company" name="company" [(ngModel)]="signature.company" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  placeholder="Example Company">
+              </div>
+              
+              <!-- Email -->
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" [(ngModel)]="signature.email" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  placeholder="john.doe@example.com">
+              </div>
+              
+              <!-- Phone -->
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                <input type="tel" id="phone" name="phone" [(ngModel)]="signature.phone" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  placeholder="+1 (555) 123-4567">
+              </div>
+              
+              <!-- Website -->
+              <div>
+                <label for="website" class="block text-sm font-medium text-gray-700">Website</label>
+                <input type="text" id="website" name="website" [(ngModel)]="signature.website" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  placeholder="www.example.com">
+              </div>
+              
+              <!-- Profile Image -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Profile Photo</label>
+                <div class="mt-1 flex items-center">
+                  <div class="h-16 w-16 rounded-full overflow-hidden bg-gray-100">
+                    <img *ngIf="signature.profileImage" [src]="signature.profileImage" class="h-full w-full object-cover">
+                    <svg *ngIf="!signature.profileImage" class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    (change)="onFileSelected($event)" 
+                    class="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                </div>
+              </div>
+              
+              <!-- Social Media -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Social Media</label>
+                
+                <!-- Add social media form -->
+                <div class="mt-1 flex gap-2">
+                  <input type="text" [(ngModel)]="newSocialPlatform" 
+                    class="block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    placeholder="LinkedIn, Twitter, etc.">
+                  <input type="text" [(ngModel)]="newSocialUrl" 
+                    class="block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    placeholder="https://...">
+                  <button type="button" (click)="addSocialProfile()" 
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Add
+                  </button>
+                </div>
+                
+                <!-- Social profiles list -->
+                <div class="mt-2 space-y-2">
+                  <div *ngFor="let profile of socialProfiles; let i = index" class="flex items-center justify-between py-1 px-2 bg-gray-50 rounded-md">
+                    <span>{{profile.platform}}</span>
+                    <button type="button" (click)="removeSocialProfile(i)" 
+                      class="text-red-600 hover:text-red-800">
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Template selection -->
+            <div class="mt-6">
+              <h3 class="text-sm font-medium text-gray-700">Select Template</h3>
+              <div class="mt-2 grid grid-cols-3 gap-3">
+                <div *ngFor="let template of templates" 
+                  class="relative border rounded-md p-3 cursor-pointer hover:border-blue-500"
+                  [class.ring-2]="selectedTemplate.id === template.id"
+                  [class.ring-blue-500]="selectedTemplate.id === template.id"
+                  (click)="selectTemplate(template)">
+                  <div class="text-center">
+                    <div class="h-12 flex items-center justify-center" [style.color]="template.primaryColor">
+                      <div class="font-bold">{{template.name}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right column - Preview & Export -->
+          <div class="w-full lg:w-1/2 flex flex-col gap-6">
+            <!-- Preview -->
+            <div class="bg-white shadow rounded-lg p-6">
+              <h2 class="text-lg font-medium text-gray-900 mb-4">Preview</h2>
+              
+              <div class="border p-4 bg-white">
+                <!-- Signature Preview -->
+                <div id="signature-preview" class="max-w-md">
+                  <!-- Professional Template -->
+                  <table *ngIf="selectedTemplate.id === 'professional'" style="font-family: Arial, sans-serif; color: #333333; border-collapse: collapse;">
+                    <tr>
+                      <td *ngIf="signature.profileImage" style="vertical-align: middle; padding-right: 15px;">
+                        <img [src]="signature.profileImage" [alt]="signature.name" style="width: 100px; height: 100px; border-radius: 50%;">
+                      </td>
+                      <td [style.borderLeft]="'2px solid ' + selectedTemplate.secondaryColor" style="vertical-align: middle; padding: 0 15px;">
+                        <h3 [style.color]="selectedTemplate.primaryColor" style="margin: 0; font-size: 18px;">{{signature.name}}</h3>
+                        <p style="margin: 5px 0; font-size: 14px;">{{signature.jobTitle}}</p>
+                        <p style="margin: 5px 0; font-size: 14px; font-weight: bold;">{{signature.company}}</p>
+                        <p *ngIf="signature.email" style="margin: 5px 0; font-size: 14px;">
+                          <a [href]="'mailto:' + signature.email" [style.color]="selectedTemplate.primaryColor" style="text-decoration: none;">{{signature.email}}</a>
+                        </p>
+                        <p *ngIf="signature.phone" style="margin: 5px 0; font-size: 14px;">{{signature.phone}}</p>
+                        <p *ngIf="signature.website" style="margin: 5px 0; font-size: 14px;">
+                          <a [href]="'https://' + signature.website" [style.color]="selectedTemplate.primaryColor" style="text-decoration: none;">{{signature.website}}</a>
+                        </p>
+                      </td>
+                    </tr>
+                    <tr *ngIf="socialProfiles.length > 0">
+                      <td [attr.colspan]="signature.profileImage ? 2 : 1" style="padding-top: 10px;">
+                        <div style="display: flex; gap: 10px;">
+                          <a *ngFor="let profile of socialProfiles" [href]="profile.url" style="text-decoration: none;">
+                            <svg [style.fill]="selectedTemplate.primaryColor" width="20" height="20" viewBox="0 0 16 16">
+                              <path [attr.d]="profile.icon"></path>
+                            </svg>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <!-- Minimal Template -->
+                  <table *ngIf="selectedTemplate.id === 'minimal'" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333333; border-collapse: collapse;">
+                    <tr>
+                      <td style="vertical-align: middle;">
+                        <h3 style="margin: 0; font-size: 16px; font-weight: normal;">{{signature.name}}</h3>
+                        <p [style.color]="selectedTemplate.secondaryColor" style="margin: 3px 0; font-size: 12px;">{{signature.jobTitle}} at {{signature.company}}</p>
+                        <p style="margin: 3px 0; font-size: 12px;">
+                          <a *ngIf="signature.email" [href]="'mailto:' + signature.email" style="color: #333333; text-decoration: none;">{{signature.email}}</a>
+                          <span *ngIf="signature.email && signature.phone"> • </span>
+                          <span *ngIf="signature.phone">{{signature.phone}}</span>
+                          <span *ngIf="(signature.email || signature.phone) && signature.website"> • </span>
+                          <span *ngIf="signature.website"> 
+                            <a [href]="'https://' + signature.website" style="color: #333333; text-decoration: none;">{{signature.website}}</a>
+                          </span>
+                        </p>
+                      </td>
+                    </tr>
+                    <tr *ngIf="socialProfiles.length > 0">
+                      <td style="padding-top: 8px;">
+                        <div style="display: flex; gap: 8px;">
+                          <a *ngFor="let profile of socialProfiles" [href]="profile.url" style="text-decoration: none;">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                              <path [attr.d]="profile.icon"></path>
+                            </svg>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <!-- Creative Template -->
+                  <table *ngIf="selectedTemplate.id === 'creative'" [style.backgroundColor]="selectedTemplate.secondaryColor" style="font-family: 'Georgia', serif; border-collapse: collapse; padding: 15px;">
+                    <tr>
+                      <td *ngIf="signature.profileImage" style="vertical-align: top; padding-right: 15px;">
+                        <img [src]="signature.profileImage" [alt]="signature.name" [style.border]="'3px solid ' + selectedTemplate.primaryColor" style="width: 120px; height: auto;">
+                      </td>
+                      <td style="vertical-align: top;">
+                        <h2 [style.color]="selectedTemplate.primaryColor" style="margin: 0; font-size: 24px; font-weight: bold;">{{signature.name}}</h2>
+                        <p style="margin: 5px 0; font-size: 16px; font-style: italic; color: #333;">{{signature.jobTitle}}</p>
+                        <p style="margin: 5px 0; font-size: 16px; font-weight: bold;">{{signature.company}}</p>
+                        <p *ngIf="signature.email" style="margin: 15px 0 5px 0; font-size: 14px;">
+                          <a [href]="'mailto:' + signature.email" [style.color]="selectedTemplate.primaryColor" style="text-decoration: none;">{{signature.email}}</a>
+                        </p>
+                        <p *ngIf="signature.phone" style="margin: 5px 0; font-size: 14px;">{{signature.phone}}</p>
+                        <p *ngIf="signature.website" style="margin: 5px 0; font-size: 14px;">
+                          <a [href]="'https://' + signature.website" [style.color]="selectedTemplate.primaryColor" style="text-decoration: none;">{{signature.website}}</a>
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Modern Template -->
+                  <table *ngIf="selectedTemplate.id === 'modern'" style="font-family: 'Segoe UI', Roboto, sans-serif; color: #2c3e50; border-collapse: collapse;">
+                    <tr>
+                      <td *ngIf="signature.profileImage" style="vertical-align: middle; padding-right: 20px;">
+                        <img [src]="signature.profileImage" [alt]="signature.name" style="width: 90px; height: 90px; border-radius: 8px; object-fit: cover;">
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <div style="border-left: 4px solid #2ecc71; padding-left: 15px;">
+                          <h3 style="margin: 0; font-size: 20px; font-weight: 600; color: #2ecc71;">{{signature.name}}</h3>
+                          <p style="margin: 5px 0; font-size: 14px; color: #7f8c8d;">{{signature.jobTitle}}</p>
+                          <p style="margin: 5px 0; font-size: 14px; font-weight: 500;">{{signature.company}}</p>
+                          <div style="margin-top: 10px; font-size: 13px;">
+                            <p *ngIf="signature.email" style="margin: 3px 0;">
+                              <a [href]="'mailto:' + signature.email" style="color: #2ecc71; text-decoration: none;">{{signature.email}}</a>
+                            </p>
+                            <p *ngIf="signature.phone" style="margin: 3px 0;">{{signature.phone}}</p>
+                            <p *ngIf="signature.website" style="margin: 3px 0;">
+                              <a [href]="'https://' + signature.website" style="color: #2ecc71; text-decoration: none;">{{signature.website}}</a>
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="socialProfiles.length > 0">
+                      <td [attr.colspan]="signature.profileImage ? 2 : 1" style="padding-top: 12px;">
+                        <div style="display: flex; gap: 12px;">
+                          <a *ngFor="let profile of socialProfiles" [href]="profile.url" style="text-decoration: none;">
+                            <svg [style.fill]="selectedTemplate.primaryColor" width="18" height="18" viewBox="0 0 16 16">
+                              <path [attr.d]="profile.icon"></path>
+                            </svg>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Elegant Template -->
+                  <table *ngIf="selectedTemplate.id === 'elegant'" style="font-family: 'Playfair Display', Georgia, serif; color: #2c3e50; border-collapse: collapse;">
+                    <tr>
+                      <td *ngIf="signature.profileImage" style="vertical-align: middle; padding-right: 25px;">
+                        <img [src]="signature.profileImage" [alt]="signature.name" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #9b59b6;">
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <h3 style="margin: 0; font-size: 22px; font-weight: 400; color: #9b59b6;">{{signature.name}}</h3>
+                        <p style="margin: 8px 0; font-size: 15px; font-style: italic; color: #7f8c8d;">{{signature.jobTitle}}</p>
+                        <p style="margin: 8px 0; font-size: 15px; font-weight: 500;">{{signature.company}}</p>
+                        <div style="margin-top: 12px; font-size: 14px; color: #34495e;">
+                          <p *ngIf="signature.email" style="margin: 4px 0;">
+                            <a [href]="'mailto:' + signature.email" style="color: #9b59b6; text-decoration: none;">{{signature.email}}</a>
+                          </p>
+                          <p *ngIf="signature.phone" style="margin: 4px 0;">{{signature.phone}}</p>
+                          <p *ngIf="signature.website" style="margin: 4px 0;">
+                            <a [href]="'https://' + signature.website" style="color: #9b59b6; text-decoration: none;">{{signature.website}}</a>
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="socialProfiles.length > 0">
+                      <td [attr.colspan]="signature.profileImage ? 2 : 1" style="padding-top: 15px;">
+                        <div style="display: flex; gap: 15px;">
+                          <a *ngFor="let profile of socialProfiles" [href]="profile.url" style="text-decoration: none;">
+                            <svg [style.fill]="selectedTemplate.primaryColor" width="20" height="20" viewBox="0 0 16 16">
+                              <path [attr.d]="profile.icon"></path>
+                            </svg>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Bold Template -->
+                  <table *ngIf="selectedTemplate.id === 'bold'" style="font-family: 'Montserrat', sans-serif; color: #ecf0f1; border-collapse: collapse; background-color: #2c3e50; padding: 20px; border-radius: 8px;">
+                    <tr>
+                      <td *ngIf="signature.profileImage" style="vertical-align: middle; padding-right: 25px;">
+                        <img [src]="signature.profileImage" [alt]="signature.name" style="width: 110px; height: 110px; border-radius: 8px; object-fit: cover; border: 3px solid #e67e22;">
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <h3 style="margin: 0; font-size: 24px; font-weight: 700; color: #e67e22;">{{signature.name}}</h3>
+                        <p style="margin: 8px 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">{{signature.jobTitle}}</p>
+                        <p style="margin: 8px 0; font-size: 16px; font-weight: 600;">{{signature.company}}</p>
+                        <div style="margin-top: 15px; font-size: 14px;">
+                          <p *ngIf="signature.email" style="margin: 5px 0;">
+                            <a [href]="'mailto:' + signature.email" style="color: #e67e22; text-decoration: none; font-weight: 500;">{{signature.email}}</a>
+                          </p>
+                          <p *ngIf="signature.phone" style="margin: 5px 0;">{{signature.phone}}</p>
+                          <p *ngIf="signature.website" style="margin: 5px 0;">
+                            <a [href]="'https://' + signature.website" style="color: #e67e22; text-decoration: none; font-weight: 500;">{{signature.website}}</a>
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="socialProfiles.length > 0">
+                      <td [attr.colspan]="signature.profileImage ? 2 : 1" style="padding-top: 15px;">
+                        <div style="display: flex; gap: 15px;">
+                          <a *ngFor="let profile of socialProfiles" [href]="profile.url" style="text-decoration: none;">
+                            <svg [style.fill]="selectedTemplate.primaryColor" width="22" height="22" viewBox="0 0 16 16">
+                              <path [attr.d]="profile.icon"></path>
+                            </svg>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Export Buttons -->
+              <div class="mt-4 flex gap-3">
+                <button (click)="copyToClipboard()" 
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                  </svg>
+                  Copy to Clipboard
+                </button>
+                <button (click)="exportAsImage()" 
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  Export as Image
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
